@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Results{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-5">Your Quiz Results</h1>
+    <p>You scored <strong>{{ score }}</strong> out of <strong>{{ total }}</strong>.</p>
+
+    {% if score == total %}
+        <p class="text-success">Excellent! You got all the answers correct!</p>
+    {% elif score >= total // 2 %}
+        <p class="text-warning">Good job! You scored more than half of the questions correctly.</p>
+    {% else %}
+        <p class="text-danger">Keep trying! You can improve your score next time.</p>
+    {% endif %}
+
+    <a href="{{ url_for('views.quiz') }}" class="btn btn-primary mt-3">Try Again</a>
+    <a href="{{ url_for('views.home') }}" class="btn btn-secondary mt-3">Go Home</a>
+</div>
+{% endblock %}
