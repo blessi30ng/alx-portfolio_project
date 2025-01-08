@@ -1,9 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}
-Home
-{% endblock %}
+{% block title %}Welcome to QuizMaster{% endblock %}
 
 {% block content %}
-<h1 align="center">Welcome, {{ user.first_name }}!</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mt-5">
+                <div class="card-body text-center">
+                    <h1 class="card-title mb-4">Welcome to QuizMaster!</h1>
+                    <p class="card-text">Test your knowledge with our exciting quizzes.</p>
+                    <a href="{{ url_for('views.quiz') }}" class="btn btn-primary btn-lg mt-3">Start Quiz</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

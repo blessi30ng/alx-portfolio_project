@@ -11,3 +11,7 @@ views = Blueprint('views', __name__)
 def home():
     return render_template("home.html", user=current_user)
 
+@views.route('/quiz')
+@login_required
+def quiz():
+    return render_template("quiz.html", user=current_user)
