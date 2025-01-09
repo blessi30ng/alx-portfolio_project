@@ -5,7 +5,11 @@
 {% block content %}
 <div class="container">
     <h1 class="mt-5">Quiz</h1>
-    <form method="POST">
+
+    <div id="timer" style="font-size: 1.5em; color: red;">10:00</div>
+
+    
+    <form id="quiz-form" method="POST">
         {% for question in questions %}
         <div class="form-group">
             <label>{{ question.question }}</label><br>
@@ -30,4 +34,29 @@
         <button type="submit" class="btn btn-primary mt-3">Submit Quiz</button>
     </form>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let timer = 10 * 60; 
+        const timerDisplay = document.getElementById("timer");
+        const quizForm = document.getElementById("quiz-form");
+
+        function updateTimer() {
+            const minutes = Math.floor(timer / 60);
+            const seconds = timer % 60;
+            timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+            timer--;
+
+            if (timer < 0) {
+                clearInterval(timerInterval);
+                alert("Time's up! Submitting your quiz.");
+                quizForm.submit(); 
+            }
+        }
+
+        const timerInterval = setInterval(updateTimer, 1000);
+        updateTimer(); 
+    });
+</script>
+
 {% endblock %}
