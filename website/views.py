@@ -2,10 +2,42 @@ from flask import Blueprint, render_template, request, flash, jsonify, redirect,
 from flask_login import login_required, current_user
 from . import db
 import json
+import random
+import requests
+import html
 from .models import Question
 
 views = Blueprint('views', __name__)
 
+def fetch_questions():
+    Question.query.delete()
+    db.session.commit()
+    
+    response = requests.get('https://opentdb.com/api.php?amount=10&type=multiple')
+    data = response.json()
+    
+    if data['response_code'] == 0: 
+        for q in data['results']:
+            question_text = html.unescape(q['question'])
+            correct_answer = html.unescape(q['correct_answer'])
+            incorrect_answers = [html.unescape(ans) for ans in q['incorrect_answers']]
+            
+            options = incorrect_answers + [correct_answer]
+            random.shuffle(options)
+            
+            correct_option_index = options.index(correct_answer) + 1  
+
+            question = Question(
+                question=question_text,
+                option_1=options[0],
+                option_2=options[1],
+                option_3=options[2],
+                option_4=options[3],
+                correct_option=correct_option_index 
+            )
+            db.session.add(question)
+    
+    db.session.commit()
 
 @views.route('/', methods=['GET', 'POST'])
 @login_required
@@ -15,6 +47,8 @@ def home():
 @views.route('/quiz', methods=['GET', 'POST'])
 @login_required
 def quiz():
+    if request.method == 'GET':
+        fetch_questions()
     questions = Question.query.all()
 
     if request.method == 'POST':
