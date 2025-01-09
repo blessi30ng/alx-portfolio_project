@@ -4,18 +4,58 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="mt-5">Your Quiz Results</h1>
-    <p>You scored <strong>{{ score }}</strong> out of <strong>{{ total }}</strong>.</p>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mt-5">
+                <div class="card-body text-center">
+                    <h1 class="card-title mb-4">Your Quiz Results</h1>
+                    <p class="h3 mb-4">You scored <strong>{{ score }}</strong> out of <strong>{{ total }}</strong></p>
 
-    {% if score == total %}
-        <p class="text-success">Excellent! You got all the answers correct!</p>
-    {% elif score >= total // 2 %}
-        <p class="text-warning">Good job! You scored more than half of the questions correctly.</p>
-    {% else %}
-        <p class="text-danger">Keep trying! You can improve your score next time.</p>
-    {% endif %}
+                    {% if score == total %}
+                        <p class="text-success h4">Excellent! You got all the answers correct!</p>
+                    {% elif score >= total // 2 %}
+                        <p class="text-warning h4">Good job! You scored more than half of the questions correctly.</p>
+                    {% else %}
+                        <p class="text-danger h4">Keep trying! You can improve your score next time.</p>
+                    {% endif %}
 
-    <a href="{{ url_for('views.quiz') }}" class="btn btn-primary mt-3">Try Again</a>
-    <a href="{{ url_for('views.home') }}" class="btn btn-secondary mt-3">Go Home</a>
+                    <div class="mt-4">
+                        <p class="h5">Your Statistics:</p>
+                        <p>Average Score: {{ "%.1f"|format(average|float) }}%</p>
+                        <p>Total Attempts: {{ attempts }}</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <h2 class="h4">Leaderboard</h2>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Name</th>
+                                    <th>Average Score</th>
+                                    <th>Attempts</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in leaderboard %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ user.first_name }}</td>
+                                    <td>{{ "%.1f"|format(user.average|float) }}%</td>
+                                    <td>{{ user.attempts }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ url_for('views.quiz') }}" class="btn btn-primary">Try Again</a>
+                        <a href="{{ url_for('views.home') }}" class="btn btn-secondary ms-2">Go Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

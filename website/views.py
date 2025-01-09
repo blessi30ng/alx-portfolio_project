@@ -5,7 +5,8 @@ import json
 import random
 import requests
 import html
-from .models import Question
+from .models import Question, Score, User
+from sqlalchemy import func
 
 views = Blueprint('views', __name__)
 
@@ -53,10 +54,21 @@ def quiz():
 
     if request.method == 'POST':
         score = 0
+        total = len(questions)
         for question in questions:
             user_answer = request.form.get(f"question{question.id}")
             if user_answer and int(user_answer) == question.correct_option:
                 score += 1
+
+        new_score = Score(
+            score=score,
+            total_questions=total,
+            user_id=current_user.id
+        )
+        db.session.add(new_score)
+        db.session.commit()
+
+
         flash(f'You scored {score} out of {len(questions)}!', category='success')
         return redirect(url_for('views.results', score=score, total=len(questions))) 
 
@@ -67,5 +79,32 @@ def quiz():
 def results():
     score = request.args.get('score', type=int)
     total = request.args.get('total', type=int)
+
+    if score is None or total is None:
+        return redirect(url_for('views.home'))
+    
+    user_stats = db.session.query(
+        func.avg(Score.score * 100.0 / Score.total_questions).label('average'),
+        func.count(Score.id).label('attempts')
+    ).filter_by(user_id=current_user.id).first()
+    
+    
+    leaderboard = db.session.query(
+        User.first_name,
+        func.avg(Score.score * 100.0 / Score.total_questions).label('average'),
+        func.count(Score.id).label('attempts')
+    ).join(Score).group_by(User.id).order_by(
+        func.avg(Score.score * 100.0 / Score.total_questions).desc()
+    ).limit(10).all()
+    
+    return render_template(
+        "results.html",
+        score=score,
+        total=total,
+        user=current_user,
+        average=user_stats.average if user_stats.average else 0,
+        attempts=user_stats.attempts,
+        leaderboard=leaderboard
+    )
 
     return render_template("results.html", score=score, total=total)
