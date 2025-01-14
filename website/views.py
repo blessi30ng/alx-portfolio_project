@@ -87,7 +87,6 @@ def quiz():
 
         session['last_quiz_answers'] = user_answers
 
-
         flash(f'You scored {score} out of {len(questions)}!', category='success')
         return redirect(url_for('views.results', score=score, total=len(questions))) 
 
