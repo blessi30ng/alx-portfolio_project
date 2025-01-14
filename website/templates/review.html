@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Review{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mt-5">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4">Quiz Review</h1>
+                    
+                    {% for answer in answers %}
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Question {{ loop.index }}</h5>
+                                <p class="font-weight-bold">{{ answer.question }}</p>
+                                
+                                <div class="ml-3">
+                                    <p>
+                                        Your answer: 
+                                        <span class="{{ 'text-success font-weight-bold' if answer.is_correct else 'text-danger font-weight-bold' }}">
+                                            {{ answer.user_answer or 'No answer provided' }}
+                                        </span>
+                                    </p>
+                                    {% if not answer.is_correct %}
+                                        <p class="text-success font-weight-bold">
+                                            Correct answer: {{ answer.correct_answer }}
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('views.quiz') }}" class="btn btn-primary">Try Again</a>
+                        <a href="{{ url_for('views.results') }}" class="btn btn-info">Back to Results</a>
+                        <a href="{{ url_for('views.home') }}" class="btn btn-secondary">Go Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

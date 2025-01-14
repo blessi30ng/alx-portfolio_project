@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for
+from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for, session
 from flask_login import login_required, current_user
 from . import db
 import json
@@ -55,10 +55,27 @@ def quiz():
     if request.method == 'POST':
         score = 0
         total = len(questions)
+        user_answers = []
         for question in questions:
             user_answer = request.form.get(f"question{question.id}")
-            if user_answer and int(user_answer) == question.correct_option:
+            selected_option = None
+            if user_answer:
+                selected_option = getattr(question, f'option_{user_answer}')
+            correct_option = getattr(question, f'option_{question.correct_option}')
+            is_correct = user_answer and int(user_answer) == question.correct_option
+
+            if is_correct:
                 score += 1
+
+            # Add question and answer details to the user's answer list
+            user_answers.append({
+                'question': question.question,
+                'user_answer': selected_option,
+                'correct_answer': correct_option,
+                'is_correct': is_correct
+            })
+
+        
 
         new_score = Score(
             score=score,
@@ -67,6 +84,8 @@ def quiz():
         )
         db.session.add(new_score)
         db.session.commit()
+
+        session['last_quiz_answers'] = user_answers
 
 
         flash(f'You scored {score} out of {len(questions)}!', category='success')
@@ -107,4 +126,13 @@ def results():
         leaderboard=leaderboard
     )
 
-    return render_template("results.html", score=score, total=total)
+
+@views.route('/review')
+@login_required
+def review():
+    answers = session.get('last_quiz_answers')
+    if not answers:
+        flash('No quiz results to review.', 'error')
+        return redirect(url_for('views.home'))
+    
+    return render_template('review.html', answers=answers, user=current_user)
