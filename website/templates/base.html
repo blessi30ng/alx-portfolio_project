@@ -2,22 +2,26 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Linking Bootstrap CSS for styling -->
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
       crossorigin="anonymous"
     />
+    <!-- Linking Fonts -->
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
       crossorigin="anonymous"
     />
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+    <!-- <!-- title -->
     <title>{% block title %}Home{% endblock %}</title>
   </head>
+  <!-- navbar -->
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #007bff;  padding: 1rem 2rem;">
       <button
         class="navbar-toggler"
         type="button"
@@ -28,18 +32,26 @@
       </button>
       <div class="collapse navbar-collapse" id="navbar">
         <div class="navbar-nav">
+          <!-- Links for authenticated users -->
           {% if current_user.is_authenticated %}
-          <a class="nav-item nav-link" id="home" href="{{ url_for('views.home') }}">Home</a>
-          <a class="nav-item nav-link" id="quiz" href="{{ url_for('views.quiz') }}">Quiz</a>
-          <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+          <a class="nav-item nav-link font-weight-bold" id="home" href="{{ url_for('views.home') }}">Home</a>
+          <a class="nav-item nav-link font-weight-bold" id="quiz" href="{{ url_for('views.quiz') }}">Quiz</a>
+          <a class="nav-item nav-link font-weight-bold" id="logout" href="/logout">Logout</a>
           {% else %}
-          <a class="nav-item nav-link" id="login" href="/login">Login</a>
-          <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
+          <!-- Links for unauthenticated users -->
+          <a class="nav-item nav-link font-weight-bold" id="login" href="/login">Login</a>
+          <a class="nav-item nav-link font-weight-bold" id="signUp" href="/sign-up">Sign Up</a>
           {% endif %}
+        </div>
+
+        <!-- navbar items aligned to the right-->
+        <div class="navbar-nav ml-auto">
+          <a class="nav-item nav-link font-weight-bold" id="blog" href="{{ url_for('views.blog') }}">Blog</a>
+          <a class="nav-item nav-link font-weight-bold" id="contact" href="{{ url_for('views.contact') }}">Contact Us</a>
         </div>
       </div>
     </nav>
-
+     <!-- Flash messages for success or error notifications -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
@@ -61,21 +73,25 @@
         {% endfor %}
       {% endif %}
     {% endwith %}
-
+    <!-- Main content of the page -->       
     <div class="container">
       {% block content %} {% endblock %}
     </div>
-
+    <!-- jQuery and Popper.js for Bootstrap components to work -->
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
       integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
       crossorigin="anonymous"
     ></script>
+
+    <script type="text/javascript" src="../web_dynamic/1-script.js"></script>
+
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
       integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
       crossorigin="anonymous"
     ></script>
+     <!-- Including Bootstrap's JS for interactive components like dropdowns, modals-->
     <script
       src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
@@ -83,9 +99,6 @@
     ></script>
 
     {% block javascript %}
-    <script type="text/javascript">
-  
-    </script>
     {% endblock %}
   </body>
 </html>

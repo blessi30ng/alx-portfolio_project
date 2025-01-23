@@ -1,16 +1,17 @@
 {% extends "base.html" %}
-
+<!--title-->
 {% block title %}Quiz{% endblock %}
 
 {% block content %}
 <div class="container">
     <h1 class="mt-5">Quiz</h1>
-
-    <div id="timer" style="font-size: 1.5em; color: red;">10:00</div>
+    <!-- timer section-->
+    <div id="timer" style="font-size: 1.5em; color: red;">5:00</div>
 
     
     <form id="quiz-form" method="POST">
         {% for question in questions %}
+        <!-- Quiz -->
         <div class="form-group">
             <label>{{ question.question }}</label><br>
             <div class="form-check">
@@ -33,11 +34,13 @@
         {% endfor %}
         <button type="submit" class="btn btn-primary mt-3">Submit Quiz</button>
     </form>
+      
 </div>
+
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        let timer = 10 * 60; 
+        let timer = 5 * 60; 
         const timerDisplay = document.getElementById("timer");
         const quizForm = document.getElementById("quiz-form");
 
