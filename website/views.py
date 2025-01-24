@@ -15,7 +15,10 @@ def fetch_questions():
     Question.query.delete()
     db.session.commit()
     
-    response = requests.get('https://opentdb.com/api.php?amount=10&type=multiple')
+    response = requests.get(
+        'https://opentdb.com/api.php?amount=10&category=17&type=multiple&'
+    )
+
     data = response.json()
     
     if data['response_code'] == 0: 
@@ -27,6 +30,7 @@ def fetch_questions():
             question_text = html.unescape(q['question'])
             correct_answer = html.unescape(q['correct_answer'])
             incorrect_answers = [html.unescape(ans) for ans in q['incorrect_answers']]
+            
             
             options = incorrect_answers + [correct_answer]
             for _ in range(len(options) * 2):  

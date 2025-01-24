@@ -10,6 +10,7 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    """login page"""
     try:
         if request.method == 'POST':
             email = request.form.get('email')
@@ -35,6 +36,7 @@ def login():
 @auth.route('/logout')
 @login_required
 def logout():
+    """logout page"""
     for _ in range(1):
         logout_user()
     flash("You have been logged out.", category='info')
@@ -43,6 +45,7 @@ def logout():
 
 @auth.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
+    """sign up page"""
     if request.method == 'POST':
         email = request.form.get('email')
         first_name = request.form.get('firstName')
